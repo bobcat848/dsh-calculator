@@ -1,4 +1,4 @@
-# dsh-cost-tracker
+# dsh-calculator
 
 A DeepSeek Harness (DSH) web plugin that shows your **DeepSeek API spend** and
 **account balance** in the right-hand aside panel of the DSH web GUI.
@@ -48,7 +48,7 @@ bash install.sh
 ```
 
 两种方式等价：都会把插件装进
-`~/.dsh/profiles/node_modules/dsh-cost-tracker` 并在
+`~/.dsh/profiles/node_modules/dsh-calculator` 并在
 `~/.dsh/profiles/web/cordis.patch.yml` 追加 loader 行（幂等：重复执行安全，
 已有行不会重复添加）。
 
@@ -56,14 +56,14 @@ bash install.sh
 
 ```bash
 # 1. copy the package into the profile's hoisted node_modules
-mkdir -p ~/.dsh/profiles/node_modules/dsh-cost-tracker
-cp -r lib package.json ~/.dsh/profiles/node_modules/dsh-cost-tracker/
+mkdir -p ~/.dsh/profiles/node_modules/dsh-calculator
+cp -r lib package.json ~/.dsh/profiles/node_modules/dsh-calculator/
 
 # 2. append the loader row to the web profile patch (once)
 #    edit ~/.dsh/profiles/web/cordis.patch.yml and add:
 #    - insert:
-#        - id: dsh-cost-tracker
-#          name: 'dsh-cost-tracker'
+#        - id: dsh-calculator
+#          name: 'dsh-calculator'
 #          config: {}
 ```
 
@@ -113,7 +113,7 @@ Rates are the official DeepSeek prices (CNY per 1M tokens):
 ## 卸载
 
 ```bash
-rm -rf ~/.dsh/profiles/node_modules/dsh-cost-tracker
+rm -rf ~/.dsh/profiles/node_modules/dsh-calculator
 # 并从 ~/.dsh/profiles/web/cordis.patch.yml 删除对应 insert 行
 ```
 

@@ -1,4 +1,4 @@
-# dsh-cost-tracker installer for Windows (PowerShell).
+# dsh-calculator installer for Windows (PowerShell).
 # Two modes:
 #   1. Local clone:  .\install.ps1
 #      (copies the package from this checked-out repo)
@@ -18,10 +18,10 @@ try {
 $dshHome = if ($env:DSH_HOME) { $env:DSH_HOME } else { Join-Path $env:USERPROFILE '.dsh' }
 
 $profilesRoot = Join-Path $dshHome 'profiles'
-$destDir = Join-Path $profilesRoot 'node_modules\dsh-cost-tracker'
+$destDir = Join-Path $profilesRoot 'node_modules\dsh-calculator'
 $patchFile = Join-Path $profilesRoot 'web\cordis.patch.yml'
 
-Write-Host "Installing dsh-cost-tracker into $destDir"
+Write-Host "Installing dsh-calculator into $destDir"
 
 # 1. Obtain the package files.
 #    Local mode: the script is running from a cloned checkout, so copy the
@@ -49,12 +49,12 @@ if ($localScript -and (Test-Path (Join-Path (Split-Path $localScript) 'package.j
 # 2. Append the loader row to cordis.patch.yml if not already present.
 if (Test-Path $patchFile) {
     $content = Get-Content $patchFile -Raw
-    if ($content -notmatch 'dsh-cost-tracker') {
+    if ($content -notmatch 'dsh-calculator') {
         $row = @"
 
 - insert:
-    - id: dsh-cost-tracker
-      name: 'dsh-cost-tracker'
+    - id: dsh-calculator
+      name: 'dsh-calculator'
       config: {}
 "@
         Add-Content -Path $patchFile -Value $row -Encoding UTF8
@@ -65,8 +65,8 @@ if (Test-Path $patchFile) {
 } else {
     Write-Host "WARNING: $patchFile not found — create it with:" -ForegroundColor Yellow
     Write-Host "  - insert:"
-    Write-Host "      - id: dsh-cost-tracker"
-    Write-Host "        name: 'dsh-cost-tracker'"
+    Write-Host "      - id: dsh-calculator"
+    Write-Host "        name: 'dsh-calculator'"
     Write-Host "        config: {}"
 }
 

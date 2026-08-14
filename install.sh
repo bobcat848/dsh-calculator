@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# dsh-cost-tracker installer for macOS / Linux.
+# dsh-calculator installer for macOS / Linux.
 # Two modes:
 #   1. Local clone:  bash install.sh
 #      (copies the package from this checked-out repo)
@@ -10,10 +10,10 @@ set -euo pipefail
 
 DSH_HOME="${DSH_HOME:-$HOME/.dsh}"
 PROFILES_ROOT="$DSH_HOME/profiles"
-DEST_DIR="$PROFILES_ROOT/node_modules/dsh-cost-tracker"
+DEST_DIR="$PROFILES_ROOT/node_modules/dsh-calculator"
 PATCH_FILE="$PROFILES_ROOT/web/cordis.patch.yml"
 
-echo "Installing dsh-cost-tracker into $DEST_DIR"
+echo "Installing dsh-calculator into $DEST_DIR"
 
 mkdir -p "$DEST_DIR/lib"
 
@@ -47,14 +47,14 @@ fi
 
 # 2. Append the loader row to cordis.patch.yml if not already present.
 if [ -f "$PATCH_FILE" ]; then
-  if grep -q 'dsh-cost-tracker' "$PATCH_FILE"; then
+  if grep -q 'dsh-calculator' "$PATCH_FILE"; then
     echo "  loader row already present, skipped"
   else
     cat >> "$PATCH_FILE" <<'EOF'
 
 - insert:
-    - id: dsh-cost-tracker
-      name: 'dsh-cost-tracker'
+    - id: dsh-calculator
+      name: 'dsh-calculator'
       config: {}
 EOF
     echo "  added loader row to $PATCH_FILE"
@@ -62,8 +62,8 @@ EOF
 else
   echo "WARNING: $PATCH_FILE not found — create it with:" >&2
   echo "  - insert:" >&2
-  echo "      - id: dsh-cost-tracker" >&2
-  echo "        name: 'dsh-cost-tracker'" >&2
+  echo "      - id: dsh-calculator" >&2
+  echo "        name: 'dsh-calculator'" >&2
   echo "        config: {}" >&2
 fi
 
