@@ -1,7 +1,8 @@
 # dsh-calculator
 
 A DeepSeek Harness (DSH) web plugin that shows your **DeepSeek API spend** and
-**account balance** in the right-hand aside panel of the DSH web GUI.
+**account balance** in a top-right floating card of the DSH web GUI
+(collapsible to a pill).
 
 - **当前会话费用** — the cost of the session you are looking at (per model)
 - **当天全部会话累计** — today's total spend across all sessions (per model,
@@ -19,8 +20,8 @@ A DeepSeek Harness (DSH) web plugin that shows your **DeepSeek API spend** and
 ## 安装
 
 DSH is a Cordis application. The plugin has a host half (event accounting +
-balance fetching) and a browser half (aside panel). Install it into the `web`
-profile:
+balance fetching) and a browser half (top-right overlay card). Install it into
+the `web` profile:
 
 ### 一条命令在线安装（推荐，无需克隆仓库）
 
@@ -71,14 +72,21 @@ cp -r lib package.json ~/.dsh/profiles/node_modules/dsh-calculator/
 
 ### 重启生效
 
-Plugins are discovered at boot, so **restart DSH web** after installing:
+Plugins are discovered at boot, so **restart DSH web** after installing
+(`cordis.patch.yml` 改动也会被 DSH 的用户层 HMR 热更新，通常无需重启):
 
 ```bash
 dsh web --port 3080
 ```
 
-Open `http://127.0.0.1:3080`, expand the right-hand aside rail, and you should
-see the **DeepSeek API 费用** panel.
+Open (or refresh) `http://127.0.0.1:3080`, and you should see the
+**DeepSeek API 费用** card in the top-right corner; click **×** to collapse it
+into a pill, click the pill to expand it again.
+
+> **v1.2.0 适配说明**：DSH `0.1.0-rc.6` 的布局不再提供 `aside` 插槽（右侧栏），
+> 浏览器半改为注入框架级 `shell.overlay` 插槽（右上角浮层卡片），并移除了
+> 不存在的 `ctx.layout.closeAside()`。host 半（记账 + 余额端点
+> `/dsh-calculator`）保持不变。
 
 ---
 
