@@ -1,49 +1,49 @@
 {
-  "name": "dsh-calculator",
-  "description": "DeepSeek Harness web plugin: DeepSeek API spend (per session / all sessions) and account balance in the aside panel. Only deepseek-official routes are billed; third-party models are reported as unbilled.",
-  "version": "1.0.0",
-  "license": "MIT",
-  "type": "module",
-  "main": "lib/index.js",
-  "exports": {
-    ".": "./lib/index.js",
-    "./client": "./lib/client.js",
-    "./package.json": "./package.json"
-  },
-  "dsh": {
-    "bundle": {
-      "patch": "./cordis.patch.yml"
-    },
-    "client": {
-      "inject": [
-        "@deepseek-ai/dsh-client-runtime",
-        "@deepseek-ai/dsh-client-ui-slots"
-      ],
-      "platform": "web"
-    }
-  },
-  "peerDependencies": {
-    "react": "^18.2.0",
-    "@deepseek-ai/dsh-client-runtime": "^0.0.1",
-    "@deepseek-ai/dsh-client-ui-slots": "^0.0.1"
-  },
-  "files": [
-    "lib/index.js",
-    "lib/client.js",
-    "README.md",
-    "LICENSE",
-    "install.sh",
-    "install.ps1",
-    "cordis.patch.yml"
-  ],
-  "keywords": [
-    "deepseek",
-    "dsh",
-    "deepseek-harness",
-    "cordis",
-    "plugin",
-    "cost",
-    "spend",
-    "balance"
-  ]
+    "name":  "dsh-calculator",
+    "description":  "DeepSeek Harness web plugin: DeepSeek API spend (per session / all sessions) and account balance in the aside panel. Only deepseek-official routes are billed; third-party models are reported as unbilled.",
+    "version":  "1.1.0",
+    "license":  "MIT",
+    "type":  "module",
+    "main":  "lib/index.js",
+    "exports":  {
+                    ".":  "./lib/index.js",
+                    "./client":  "./lib/client.js",
+                    "./package.json":  "./package.json"
+                },
+    "dsh":  {
+                "bundle":  {
+                               "patch":  "./cordis.patch.yml"
+                           },
+                "client":  {
+                               "inject":  [
+                                              "@deepseek-ai/dsh-client-runtime",
+                                              "@deepseek-ai/dsh-client-ui-slots"
+                                          ],
+                               "platform":  "web"
+                           }
+            },
+    "peerDependencies":  {
+                             "react":  "^18.2.0",
+                             "@deepseek-ai/dsh-client-runtime":  "^0.0.1",
+                             "@deepseek-ai/dsh-client-ui-slots":  "^0.0.1"
+                         },
+    "files":  [
+                  "lib/index.js",
+                  "lib/client.js",
+                  "README.md",
+                  "LICENSE",
+                  "install.sh",
+                  "install.ps1",
+                  "cordis.patch.yml"
+              ],
+    "keywords":  [
+                     "deepseek",
+                     "dsh",
+                     "deepseek-harness",
+                     "cordis",
+                     "plugin",
+                     "cost",
+                     "spend",
+                     "balance"
+                 ]
 }
