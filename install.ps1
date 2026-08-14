@@ -7,6 +7,14 @@
 # Idempotent: safe to re-run; existing rows are not duplicated.
 $ErrorActionPreference = 'Stop'
 
+# Older PowerShell (.NET Framework) defaults to TLS 1.0, which raw.githubusercontent.com
+# rejects — pin at least TLS 1.2 so the one-line install works everywhere.
+try {
+    [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
+} catch {
+    # TLS pinning is best-effort; fall through if the type is unavailable.
+}
+
 $dshHome = if ($env:DSH_HOME) { $env:DSH_HOME } else { Join-Path $env:USERPROFILE '.dsh' }
 
 $profilesRoot = Join-Path $dshHome 'profiles'
