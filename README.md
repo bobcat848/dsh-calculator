@@ -20,11 +20,26 @@ DSH is a Cordis application. The plugin has a host half (event accounting +
 balance fetching) and a browser half (aside panel). Install it into the `web`
 profile:
 
-### 自动安装（推荐）
+### 一条命令在线安装（推荐，无需克隆仓库）
 
-Run the installer for your platform:
+直接在你的机器上执行（脚本会从 GitHub 下载插件文件并完成安装）：
 
 ```bash
+# macOS / Linux
+curl -fsSL https://raw.githubusercontent.com/bobcat848/dsh-calculator/main/install.sh | bash
+
+# Windows PowerShell
+irm https://raw.githubusercontent.com/bobcat848/dsh-calculator/main/install.ps1 | iex
+```
+
+### 本地克隆安装
+
+或者克隆仓库后运行脚本（安装脚本会自动识别本地模式，从仓库内复制文件）：
+
+```bash
+git clone https://github.com/bobcat848/dsh-calculator.git
+cd dsh-calculator
+
 # macOS / Linux
 bash install.sh
 
@@ -32,9 +47,10 @@ bash install.sh
 .\install.ps1
 ```
 
-The installer copies the plugin into `~/.dsh/profiles/node_modules/dsh-cost-tracker`
-and appends the loader row to `~/.dsh/profiles/web/cordis.patch.yml` (idempotent:
-re-running is safe, existing rows are not duplicated).
+两种方式等价：都会把插件装进
+`~/.dsh/profiles/node_modules/dsh-cost-tracker` 并在
+`~/.dsh/profiles/web/cordis.patch.yml` 追加 loader 行（幂等：重复执行安全，
+已有行不会重复添加）。
 
 ### 手动安装
 

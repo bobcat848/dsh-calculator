@@ -1,9 +1,12 @@
 # dsh-cost-tracker installer for Windows (PowerShell).
-# Copies the plugin into the DSH web profile and registers the loader row.
+# Two modes:
+#   1. Local clone:  .\install.ps1
+#      (copies the package from this checked-out repo)
+#   2. One-liner:    irm https://raw.githubusercontent.com/bobcat848/dsh-calculator/main/install.ps1 | iex
+#      (downloads the package straight from GitHub, no clone needed)
 # Idempotent: safe to re-run; existing rows are not duplicated.
 $ErrorActionPreference = 'Stop'
 
-$scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $dshHome = if ($env:DSH_HOME) { $env:DSH_HOME } else { Join-Path $env:USERPROFILE '.dsh' }
 
 $profilesRoot = Join-Path $dshHome 'profiles'
@@ -12,14 +15,28 @@ $patchFile = Join-Path $profilesRoot 'web\cordis.patch.yml'
 
 Write-Host "Installing dsh-cost-tracker into $destDir"
 
-# 1. Copy package files (hoisted node_modules root).
-New-Item -ItemType Directory -Force -Path $destDir | Out-Null
-Copy-Item -Path (Join-Path $scriptDir 'package.json') -Destination $destDir -Force
+# 1. Obtain the package files.
+#    Local mode: the script is running from a cloned checkout, so copy the
+#    files next to it. Remote mode (irm ... | iex): $MyInvocation.MyCommand.Path
+#    is empty, so fetch the three files from GitHub instead.
 $libDir = Join-Path $destDir 'lib'
 New-Item -ItemType Directory -Force -Path $libDir | Out-Null
-Copy-Item -Path (Join-Path $scriptDir 'lib\client.js') -Destination $libDir -Force
-Copy-Item -Path (Join-Path $scriptDir 'lib\index.js') -Destination $libDir -Force
-Write-Host "  copied lib/ and package.json"
+
+$localScript = $MyInvocation.MyCommand.Path
+if ($localScript -and (Test-Path (Join-Path (Split-Path $localScript) 'package.json'))) {
+    $src = Split-Path $localScript
+    Copy-Item (Join-Path $src 'package.json') $destDir -Force
+    Copy-Item (Join-Path $src 'lib\client.js') $libDir -Force
+    Copy-Item (Join-Path $src 'lib\index.js') $libDir -Force
+    Write-Host "  copied package.json + lib/ (local: $src)"
+} else {
+    $base = 'https://raw.githubusercontent.com/bobcat848/dsh-calculator/main'
+    Write-Host "  downloading from $base ..."
+    Invoke-WebRequest -UseBasicParsing "$base/package.json" -OutFile (Join-Path $destDir 'package.json')
+    Invoke-WebRequest -UseBasicParsing "$base/lib/client.js" -OutFile (Join-Path $libDir 'client.js')
+    Invoke-WebRequest -UseBasicParsing "$base/lib/index.js" -OutFile (Join-Path $libDir 'index.js')
+    Write-Host "  downloaded package.json + lib/ (GitHub)"
+}
 
 # 2. Append the loader row to cordis.patch.yml if not already present.
 if (Test-Path $patchFile) {
