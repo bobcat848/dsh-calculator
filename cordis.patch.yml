@@ -1,0 +1,6 @@
+# Loader patch for the dsh-calculator plugin bundle.
+# Applied by `dsh plugin add dsh-calculator` (or by the install scripts).
+- insert:
+    - id: dsh-calculator
+      name: 'dsh-calculator'
+      config: {}
