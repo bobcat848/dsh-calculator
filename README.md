@@ -5,13 +5,14 @@ A DeepSeek Harness (DSH) web plugin that shows your **DeepSeek API spend** and
 
 - **当前会话费用** — the cost of the session you are looking at (per model)
 - **当天全部会话累计** — today's total spend across all sessions (per model,
-  Beijing time, resets at midnight)
+  **in your local timezone**; resets at local midnight)
 - **账户余额** — live balance from the DeepSeek API (`GET /user/balance`)
 - **第三方模型不计费** — only `deepseek-official` routes are billed; any other
   provider/model is listed as unbilled
 - **峰谷计价** — after 2026-08-17 the plugin automatically prices events by the
   Beijing peak/off-peak schedule (peak 09:00–12:00 & 14:00–18:00, off-peak =
   half price); before that date it uses the current flat rates
+- **中英文界面** — the panel follows your browser language (`zh` / `en`)
 
 ---
 
