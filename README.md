@@ -1,0 +1,106 @@
+# dsh-cost-tracker
+
+A DeepSeek Harness (DSH) web plugin that shows your **DeepSeek API spend** and
+**account balance** in the right-hand aside panel of the DSH web GUI.
+
+- **当前会话费用** — the cost of the session you are looking at (per model)
+- **全部会话累计** — total spend across all sessions (per model)
+- **账户余额** — live balance from the DeepSeek API (`GET /user/balance`)
+- **第三方模型不计费** — only `deepseek-official` routes are billed; any other
+  provider/model is listed as unbilled
+- **峰谷计价** — after 2026-08-17 the plugin automatically prices events by the
+  Beijing peak/off-peak schedule (peak 09:00–12:00 & 14:00–18:00, off-peak =
+  half price); before that date it uses the current flat rates
+
+---
+
+## 安装
+
+DSH is a Cordis application. The plugin has a host half (event accounting +
+balance fetching) and a browser half (aside panel). Install it into the `web`
+profile:
+
+### 自动安装（推荐）
+
+Run the installer for your platform:
+
+```bash
+# macOS / Linux
+bash install.sh
+
+# Windows PowerShell
+.\install.ps1
+```
+
+The installer copies the plugin into `~/.dsh/profiles/node_modules/dsh-cost-tracker`
+and appends the loader row to `~/.dsh/profiles/web/cordis.patch.yml` (idempotent:
+re-running is safe, existing rows are not duplicated).
+
+### 手动安装
+
+```bash
+# 1. copy the package into the profile's hoisted node_modules
+mkdir -p ~/.dsh/profiles/node_modules/dsh-cost-tracker
+cp -r lib package.json ~/.dsh/profiles/node_modules/dsh-cost-tracker/
+
+# 2. append the loader row to the web profile patch (once)
+#    edit ~/.dsh/profiles/web/cordis.patch.yml and add:
+#    - insert:
+#        - id: dsh-cost-tracker
+#          name: 'dsh-cost-tracker'
+#          config: {}
+```
+
+### 重启生效
+
+Plugins are discovered at boot, so **restart DSH web** after installing:
+
+```bash
+dsh web --port 3080
+```
+
+Open `http://127.0.0.1:3080`, expand the right-hand aside rail, and you should
+see the **DeepSeek API 费用** panel.
+
+---
+
+## 配置
+
+The plugin needs no configuration beyond your DeepSeek API key, which DSH
+already stores through its credentials service (the Models page writes it to
+`~/.dsh/.credentials.yaml` as `DEEPSEEK_API_KEY`, or you can export it in the
+launching environment). The balance feature reads that same credential.
+
+If the key is missing, the balance card shows a friendly error and the cost
+panel keeps working.
+
+## 计价口径
+
+Rates are the official DeepSeek prices (CNY per 1M tokens):
+
+| 模型 | 缓存命中输入 | 缓存未命中输入 | 输出 |
+|---|---|---|---|
+| deepseek-v4-flash（当前价） | ¥0.02 | ¥1.0 | ¥2.0 |
+| deepseek-v4-pro（当前价） | ¥0.025 | ¥3.0 | ¥6.0 |
+| 2026-08-17 起（峰谷） | 高峰半价 | 高峰价 | 高峰价 |
+
+- 输出 token 包含推理 token，与普通输出同价
+- 费用为估算值，与官方账单可能存在差异（缓存命中 token 量大时尤其明显）
+
+## 数据来源
+
+- 费用：host 半订阅 DSH 会话事件（`assistant/message` 的 `usage` +
+  `message.source`），按 `(provider, model)` 记账；fork 子会话的拷贝事件按
+  `message.id` 全局去重，避免重复计费
+- 余额：`GET https://api.deepseek.com/user/balance`（30 秒缓存）
+
+## 卸载
+
+```bash
+rm -rf ~/.dsh/profiles/node_modules/dsh-cost-tracker
+# 并从 ~/.dsh/profiles/web/cordis.patch.yml 删除对应 insert 行
+```
+
+## 免责声明
+
+本项目与 DeepSeek 官方无任何关联，价格与余额为接口实时数据，费用为估算。
