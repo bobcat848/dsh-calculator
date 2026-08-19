@@ -1,7 +1,7 @@
 {
     "name":  "dsh-calculator",
     "description":  "DeepSeek Harness web plugin: DeepSeek API spend (per session / all sessions) and account balance in a top-right overlay card. Only deepseek-official routes are billed; third-party models are reported as unbilled.",
-    "version":  "1.2.1",
+    "version":  "1.2.2",
     "license":  "MIT",
     "type":  "module",
     "main":  "lib/index.js",
