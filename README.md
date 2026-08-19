@@ -10,9 +10,9 @@ A DeepSeek Harness (DSH) web plugin that shows your **DeepSeek API spend** and
 - **账户余额** — live balance from the DeepSeek API (`GET /user/balance`)
 - **第三方模型不计费** — only `deepseek-official` routes are billed; any other
   provider/model is listed as unbilled
-- **峰谷计价** — after 2026-08-17 the plugin automatically prices events by the
-  Beijing peak/off-peak schedule (peak 09:00–12:00 & 14:00–18:00, off-peak =
-  half price); before that date it uses the current flat rates
+- **峰谷计价** — prices events by the Beijing peak/off-peak schedule (peak
+  09:00–12:00 & 14:00–18:00, off-peak = half price); events before 2026-08-17
+  are still billed at the then-current flat rates
 - **中英文界面** — the panel follows your browser language (`zh` / `en`)
 
 ---
@@ -102,14 +102,17 @@ panel keeps working.
 
 ## 计价口径
 
-Rates are the official DeepSeek prices (CNY per 1M tokens):
+Rates are the official DeepSeek prices (CNY per 1M tokens). Since 2026-08-17
+the peak/off-peak schedule applies (peak 09:00–12:00 & 14:00–18:00 Beijing;
+off-peak = half the peak price):
 
-| 模型 | 缓存命中输入 | 缓存未命中输入 | 输出 |
+| 模型 | 缓存命中输入（高峰/半价） | 缓存未命中输入（高峰/半价） | 输出（高峰/半价） |
 |---|---|---|---|
-| deepseek-v4-flash（当前价） | ¥0.02 | ¥1.0 | ¥2.0 |
-| deepseek-v4-pro（当前价） | ¥0.025 | ¥3.0 | ¥6.0 |
-| 2026-08-17 起（峰谷） | 高峰半价 | 高峰价 | 高峰价 |
+| deepseek-v4-flash | ¥0.10 / ¥0.05 | ¥3.0 / ¥1.5 | ¥9.0 / ¥4.5 |
+| deepseek-v4-pro | ¥0.30 / ¥0.15 | ¥9.0 / ¥4.5 | ¥27.0 / ¥13.5 |
 
+- 2026-08-17 之前的会话事件按当时费率计费（flash ¥0.02 / ¥1.0 / ¥2.0，pro
+  ¥0.025 / ¥3.0 / ¥6.0）
 - 输出 token 包含推理 token，与普通输出同价
 - 费用为估算值，与官方账单可能存在差异（缓存命中 token 量大时尤其明显）
 
