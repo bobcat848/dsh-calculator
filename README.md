@@ -7,6 +7,7 @@ A DeepSeek Harness (DSH) web plugin that shows your **DeepSeek API spend** and
 - **当前会话费用** — the cost of the session you are looking at (per model)
 - **当天全部会话累计** — today's total spend across all sessions (per model,
   **in your local timezone**; resets at local midnight)
+- **胶囊实时费用** — the collapsed pill shows today's total spend live
 - **账户余额** — live balance from the DeepSeek API (`GET /user/balance`)
 - **第三方模型不计费** — only `deepseek-official` routes are billed; any other
   provider/model is listed as unbilled
