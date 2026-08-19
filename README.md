@@ -120,6 +120,57 @@ Rates are the official DeepSeek prices (CNY per 1M tokens):
   `message.id` 全局去重，避免重复计费
 - 余额：`GET https://api.deepseek.com/user/balance`（30 秒缓存）
 
+## 已知问题与兼容性
+
+### 层叠上下文（z-index）遮挡 — v1.2.2 修复
+
+**现象**：费用卡片标题栏的 × 关闭按钮被右侧文件面板的搜索框遮住，不可见、
+不可点，卡片无法折叠为胶囊（[issue #1](https://github.com/bobcat848/dsh-calculator/issues/1)）。
+
+**根因**（层叠上下文问题，非渲染 bug）：
+
+- 插件挂载进框架的 `shell.overlay` 挂载层 `[data-shell-overlay]`
+  （`.pI_x6G_overlayLayer`），DSH rc.6 将该层写死为
+  `position: absolute; z-index: 20`
+- 右侧文件面板列（第三方组件，如 `aionui-explorer-col`）为
+  `position: static; z-index: 30` —— 作为同级的 flex 子项，z-index 依然参与
+  层叠比较，且 **30 > 20**
+- 卡片自身的 `z-index: 1200` 只在挂载层**内部**的层叠上下文生效，无法越过
+  同为 `pI_x6G_frame` 子级的文件面板 —— 于是搜索框压住了卡片的 × 按钮
+
+**修复**：插件 CSS 注入一条规则，把挂载层提到 60：
+
+```css
+html [data-shell-overlay]{z-index:60}
+```
+
+- 用框架的**稳定属性选择器** `[data-shell-overlay]`，不依赖哈希类名；
+  特异性 `0-1-1` 高于框架类选择器的 `0-1-0`，无需 `!important`
+- **为什么是 60**：> 30（文件面板）解决遮挡；< 100（DSH 模态/弹层）不抢
+  模态层级，弹窗、命令面板（z-index: 1000）仍能正常盖住卡片
+- 纯 CSS，无需 DOM 轮询 workaround
+
+**后续注意**：
+
+- 若 DSH 未来调整布局 z-index 层级，或引入 z-index ≥ 60 的常驻面板，需要
+  重新评估该值（在 30 ~ 100 区间内调整即可，不要超过 100 以免盖住模态层）
+- 其他第三方右侧面板若 z-index 高于 60，同样会遮挡卡片；可把 60 调大
+  （仍建议 < 100）
+
+### 布局接口版本 — v1.2.0 起
+
+- DSH `0.1.0-rc.6` 的布局**不再提供 `aside` 插槽**（右侧栏），浏览器半从
+  v1.2.0 起改为注入框架级 `shell.overlay` 插槽（右上角浮层卡片，可折叠），
+  并移除了已不存在的 `ctx.layout.closeAside()`
+- **v1.2.0+ 只兼容有 `shell.overlay` 插槽的 DSH 版本**；旧版 DSH（含
+  `aside` 插槽）请使用 v1.1.x
+- 若升级 DSH 大版本后卡片消失，先检查布局是否仍提供 `shell.overlay`
+
+### 浏览器实测范围
+
+- 实测：Chrome 151（Chromium）。Edge 同为 Chromium 内核，预计行为一致，
+  未逐一实测；Safari / Firefox 未验证，如遇样式问题请反馈
+
 ## 卸载
 
 ```bash
